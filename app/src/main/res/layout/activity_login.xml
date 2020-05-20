@@ -18,7 +18,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
-        android:src="@drawable/icon2" />
+        android:src="@drawable/mas" />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -55,8 +55,8 @@
             android:ems="10"
             android:hint="Username"
             android:inputType="textPersonName"
-            android:textColor="#ffff"
-            android:textColorHint="#fff"
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="@color/colorAccent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.475"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -71,8 +71,8 @@
             android:ems="10"
             android:hint="Password"
             android:inputType="textPassword"
-            android:textColor="#ffff"
-            android:textColorHint="#fff"
+            android:textColor="@color/colorPrimaryDark"
+            android:textColorHint="@color/colorAccent"
             />
 
         <Button

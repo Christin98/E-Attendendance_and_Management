@@ -13,9 +13,9 @@
     tools:layout_editor_absoluteY="81dp">
 
     <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/icon2"/>
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/mas"/>
 
     <TextView
         android:id="@+id/textView1"
@@ -26,8 +26,8 @@
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
         android:fontFamily="serif-monospace"
-        android:text="M-Attendance"
-        android:textColor="@android:color/white"
+        android:text="M-ATTENDANCE"
+        android:textColor="@android:color/holo_red_dark"
         android:textSize="40dp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,5 +35,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:fontFamily="serif-monospace" />
+
 
 </LinearLayout>

@@ -3,27 +3,38 @@
     xmlns:dist="http://schemas.android.com/apk/distribution"
     package="com.project.minor.e_attendance">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <dist:module dist:instant="true" />
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false"
+        android:icon="@drawable/mas"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/mas"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".StudentAttendanceSheet"></activity>
+        <activity android:name=".ParentsAttendanceActivity"/>
+        <activity android:name=".ParentLogin" />
+        <activity android:name=".AddParent" />
+        <activity android:name=".StudentAttendanceSheet" />
         <activity android:name=".TeacherAttendanceSheet" />
         <activity android:name=".TakeAttendance" />
         <activity android:name=".AdminAttendanceSheet" />
         <activity android:name=".AddStudent" />
         <activity android:name=".AddTeacher" />
         <activity android:name=".StudentLogin" />
-        <activity android:name=".TeacherLogin" />
+        <activity android:name=".TeacherLogin" >
+<!--        <intent-filter>-->
+<!--            <action android:name="android.intent.action.MAIN" />-->
+
+<!--            <category android:name="android.intent.category.LAUNCHER" />-->
+<!--        </intent-filter>-->
+        </activity>
         <activity android:name=".AdminLogin" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity">
@@ -34,7 +45,5 @@
             </intent-filter>
         </activity>
     </application>
-
-    <dist:module dist:instant="true" />
 
 </manifest>

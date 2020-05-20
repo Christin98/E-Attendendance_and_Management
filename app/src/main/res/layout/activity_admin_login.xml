@@ -5,7 +5,7 @@
     android:id="@+id/linear"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/recta"
     android:orientation="vertical"
     tools:context="com.project.minor.e_attendance.AdminLogin">
     <include
@@ -64,16 +64,28 @@
             />
 
         <Button
-            android:id="@+id/button3"
+            android:id="@+id/addparentbutton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@drawable/button"
             android:textColor="@android:color/white"
             android:textSize="20dp"
-            android:onClick="CreateAttendance"
-            android:text="Create today's attendance"
+            android:onClick="addParent"
+            android:text="Add/Remove Parent"
             />
+
+<!--        <Button-->
+<!--            android:id="@+id/button3"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_margin="10dp"-->
+<!--            android:background="@drawable/button"-->
+<!--            android:textColor="@android:color/white"-->
+<!--            android:textSize="20dp"-->
+<!--            android:onClick="CreateAttendance"-->
+<!--            android:text="Create today's attendance"-->
+<!--            />-->
 
 
 

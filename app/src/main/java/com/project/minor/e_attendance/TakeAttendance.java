@@ -2,6 +2,8 @@ package com.project.minor.e_attendance;
 
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.Handler;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -12,6 +14,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -20,12 +23,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.minor.e_attendance.object.Student;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import jxl.Cell;
 import jxl.Workbook;
@@ -43,20 +50,31 @@ public class TakeAttendance extends AppCompatActivity {
 
     String teacher_id;
     String class_selected;
-    Spinner period;
+    Spinner batch;
+    Spinner sub;
     String periodno;
+    String tdep;
     ArrayList<String> selectedItems;
     ArrayList<String> nonselectedItems;
     Toolbar mToolbar;
+    TextView semtv;
+    TextView classname;
 
-    ArrayList<String> ul;
+    String ssem;
+    String subj;
+    ArrayList<Student> ul;
     ListView listView;
-    ArrayList Userlist = new ArrayList<>();
-    ArrayList Usernames = new ArrayList<>();
+    ArrayList<String> Userlist = new ArrayList<>();
+    ArrayList<Object> Usernames = new ArrayList<>();
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
     DatabaseReference dbAttendance;
-    String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+    DatabaseReference teacherdb;
+    DatabaseReference atdref;
+    String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
     private ArrayAdapter adapter;
+    int stdatd;
+    int tlatd;
+    float percentage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,40 +84,607 @@ public class TakeAttendance extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle("Attendance");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        period = findViewById(R.id.spinner4);
+        batch = findViewById(R.id.batchatd);
+        sub = findViewById(R.id.subatd);
+        semtv = findViewById(R.id.semtv);
+        classname = findViewById(R.id.textView);
+
+        ul = new ArrayList<>();
+
+        Bundle bundle1 = getIntent().getExtras();
+        teacher_id = bundle1.getString("tid");
+        tdep = bundle1.getString("tdep");
+        Log.e("TA", teacher_id);
+        teacherdb = ref.child("Teacher").child(teacher_id);
+
 
         // ArrayList Userlist;
-        selectedItems = new ArrayList<String>();
+        selectedItems = new ArrayList<>();
 
-        TextView classname = findViewById(R.id.textView);
-        classname.setText("CS-X");
+        batch.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                ssem = "Semester-1";
+                ArrayList<String> list1 = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.batches)));
+                if (batch.getSelectedItem().toString().equals(list1.get(0))) {
+                    ssem = "Semester-8";
+                } else  if (batch.getSelectedItem().toString().equals(list1.get(1))) {
+                    ssem = "Semester-6";
+                } else  if (batch.getSelectedItem().toString().equals(list1.get(2))) {
+                    ssem = "Semester-4";
+                } else  if (batch.getSelectedItem().toString().equals(list1.get(3))) {
+                    ssem = "Semester-2";
+                }
+                semtv.setText(ssem);
+                Log.e("TA", "onItemSelected: "+ ssem );
+                switch (tdep) {
+                    case "Information Technology":
+                        switch (ssem) {
+                            case "Semester-1": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EM-1");
+                                sub1.add("BME");
+                                sub1.add("ECE");
+                                sub1.add("Physics");
+                                sub1.add("CP");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-2": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EM-2");
+                                sub1.add("BEEE");
+                                sub1.add("EM");
+                                sub1.add("Chemistry");
+                                sub1.add("CS");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-3": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("DS");
+                                sub1.add("PP");
+                                sub1.add("FDS");
+                                sub1.add("CD");
+                                sub1.add("CO");
+                                sub1.add("DEL");
+                                sub1.add("LA");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-4": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("AM");
+                                sub1.add("OS");
+                                sub1.add("JWT");
+                                sub1.add("SE");
+                                sub1.add("DS");
+                                sub1.add("MT");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-5": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("DBMS");
+                                sub1.add("TOC");
+                                sub1.add("CN");
+                                sub1.add("IT");
+                                sub1.add("OR");
+                                sub1.add("BAF");
+                                sub1.add("QR");
+                                sub1.add("ES");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-6": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("DSP");
+                                sub1.add("BI");
+                                sub1.add("PM");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-7": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("DSRM");
+                                sub1.add("SP");
+                                sub1.add("OOAD");
+                                sub1.add("MC");
+                                sub1.add("CGM");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-8": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("SOA");
+                                sub1.add("ADBMS");
+                                sub1.add("STQA");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                        }
+                        break;
+                    case "Computer Science":
+                        switch (ssem) {
+                            case "Semester-1": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EM-1");
+                                sub1.add("BME");
+                                sub1.add("ECE");
+                                sub1.add("Physics");
+                                sub1.add("CP");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-2": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EM-2");
+                                sub1.add("BEEE");
+                                sub1.add("EM");
+                                sub1.add("Chemistry");
+                                sub1.add("CS");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-3": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("DS");
+                                sub1.add("PP");
+                                sub1.add("FDS");
+                                sub1.add("CD");
+                                sub1.add("CO");
+                                sub1.add("DEL");
+                                sub1.add("LA");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-4": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("AM");
+                                sub1.add("OS");
+                                sub1.add("JWT");
+                                sub1.add("SE");
+                                sub1.add("DS");
+                                sub1.add("MT");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-5": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("DBMS");
+                                sub1.add("TOC");
+                                sub1.add("CN");
+                                sub1.add("IT");
+                                sub1.add("OR");
+                                sub1.add("BAF");
+                                sub1.add("QR");
+                                sub1.add("ES");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-6": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("DSP");
+                                sub1.add("BI");
+                                sub1.add("PM");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-7": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("DSRM");
+                                sub1.add("SP");
+                                sub1.add("OOAD");
+                                sub1.add("MC");
+                                sub1.add("NS");
+                                sub1.add("CGM");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-8": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("CC");
+                                sub1.add("ADBMS");
+                                sub1.add("STQA");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                        }
+                        break;
+                    case "Mechanical":
+                        switch (ssem) {
+                            case "Semester-1": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EM-1");
+                                sub1.add("BME");
+                                sub1.add("ECE");
+                                sub1.add("Physics");
+                                sub1.add("CP");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-2": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EM-2");
+                                sub1.add("BEEE");
+                                sub1.add("EM");
+                                sub1.add("Chemistry");
+                                sub1.add("CS");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-3": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("AM");
+                                sub1.add("SOM");
+                                sub1.add("MAM");
+                                sub1.add("TOM-1");
+                                sub1.add("MT");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-4": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("FM");
+                                sub1.add("MD-1");
+                                sub1.add("MT");
+                                sub1.add("MS");
+                                sub1.add("TOM-2");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-5": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("ICE");
+                                sub1.add("PM");
+                                sub1.add("MD-2");
+                                sub1.add("CDCM");
+                                sub1.add("FM");
+                                sub1.add("MT");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-6": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("NCPP");
+                                sub1.add("PVD");
+                                sub1.add("PM");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-7": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("OR");
+                                sub1.add("TQM");
+                                sub1.add("ES");
+                                sub1.add("MCD");
+                                sub1.add("LA");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-8": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("FEM");
+                                sub1.add("RAC");
+                                sub1.add("IAR");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                        }
+                        break;
+                    case "Civil":
+                        switch (ssem) {
+                            case "Semester-1": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EM-1");
+                                sub1.add("BME");
+                                sub1.add("ECE");
+                                sub1.add("Physics");
+                                sub1.add("CP");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                subj = sub.getSelectedItem().toString();
+                                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                                break;
+                            }
+                            case "Semester-2": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EM-2");
+                                sub1.add("BEEE");
+                                sub1.add("EM");
+                                sub1.add("Chemistry");
+                                sub1.add("CS");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                break;
+                            }
+                            case "Semester-3": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("SM");
+                                sub1.add("FM-1");
+                                sub1.add("CT");
+                                sub1.add("BCM");
+                                sub1.add("EG");
+                                sub1.add("LA");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                break;
+                            }
+                            case "Semester-4": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("AM");
+                                sub1.add("SA-1");
+                                sub1.add("BDD");
+                                sub1.add("FM-2");
+                                sub1.add("SV-2");
+                                sub1.add("ES");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                break;
+                            }
+                            case "Semester-5": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("SA-2");
+                                sub1.add("TE-1");
+                                sub1.add("QSV");
+                                sub1.add("EE-1");
+                                sub1.add("SD-1");
+                                sub1.add("SV-2");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                break;
+                            }
+                            case "Semester-6": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("WPE");
+                                sub1.add("ES");
+                                sub1.add("PM");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                break;
+                            }
+                            case "Semester-7": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("EE-2");
+                                sub1.add("GE-1");
+                                sub1.add("CTM");
+                                sub1.add("SD-2");
+                                sub1.add("TE-2");
+                                sub1.add("WRE");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                break;
+                            }
+                            case "Semester-8": {
+                                List<String> sub1 = new ArrayList<>();
+                                sub1.add("GE-2");
+                                sub1.add("SD-3");
+                                sub1.add("DHS");
+                                ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(TakeAttendance.this,
+                                        android.R.layout.simple_spinner_item, sub1);
+                                dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                dataAdapter.notifyDataSetChanged();
+                                sub.setAdapter(dataAdapter);
+                                break;
+                            }
+                        }
+                        break;
+                }
+                subj = sub.getSelectedItem().toString();
+                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+            }
 
-        //to get class name from teacherlogin
-        Bundle bundle1 = getIntent().getExtras();
-        class_selected = bundle1.getString("class_selected");
-        teacher_id = bundle1.getString("tid");
-        //  Toast.makeText(getApplicationContext(), teacher_id, Toast.LENGTH_LONG).show();
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
-        classname.setText(class_selected);
+            }
+        });
 
+        sub.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                subj = sub.getSelectedItem().toString();
+                Toast.makeText(TakeAttendance.this, subj, Toast.LENGTH_SHORT).show();
+                classname.setText("CS");
 
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        Handler handler=new Handler();
+        handler.postDelayed(this::adduser, 1000);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    public void adduser () {
         DatabaseReference dbuser = ref.child("Student");
-
-        dbuser.orderByChild("classes").equalTo(class_selected).addListenerForSingleValueEvent(new ValueEventListener() {
+        dbuser.orderByChild("branch").equalTo(tdep).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                // Result will be holded Here
 
                 for (DataSnapshot dsp : dataSnapshot.getChildren()) {
                     Userlist.add(dsp.child("sid").getValue().toString()); //add result into array list
                     Usernames.add(dsp.child("sname").getValue().toString());
-
-
+                    ul.add(dsp.getValue(Student.class));
                 }
-                OnStart(Userlist);
-
+                OnStart(Userlist, Usernames, ul);
+//                Userlist.clear();
+//                Usernames.clear();
+//                ul.clear();
             }
 
 
@@ -109,61 +694,67 @@ public class TakeAttendance extends AppCompatActivity {
             }
 
         });
-
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    public void OnStart(ArrayList<String> userlist) {
+    public void OnStart(ArrayList<String> userlist, ArrayList<Object> usernames, ArrayList<Student> ul1) {
         nonselectedItems = userlist;
+//        Toast.makeText(TakeAttendance.this, ul1.size(), Toast.LENGTH_SHORT).show();
+
         //create an instance of ListView
         ListView chl = findViewById(R.id.checkable_list);
         //set multiple selection mode
         chl.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
         //supply data itmes to ListView
-        ArrayAdapter<String> aa = new ArrayAdapter<String>(this, R.layout.checkable_list_layout, R.id.txt_title, userlist);
-        chl.setAdapter(aa);
+        ArrayAdapter<String> attendanceAdapter = new ArrayAdapter<>(TakeAttendance.this, R.layout.checkable_list_layout, R.id.txt_title, userlist);
+        chl.setAdapter(attendanceAdapter);
+        attendanceAdapter.notifyDataSetChanged();
         //set OnItemClickListener
-        chl.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // selected item
-                String selectedItem = ((TextView) view).getText().toString();
-                if (selectedItems.contains(selectedItem))
-                    selectedItems.remove(selectedItem); //remove deselected item from the list of selected items
-                else
-                    selectedItems.add(selectedItem); //add selected item to the list of selected items
-
-            }
-
+        chl.setOnItemClickListener((parent, view, position, id) -> {
+            // selected item
+            String selectedItem = ((TextView) view).getText().toString();
+            if (selectedItems.contains(selectedItem))
+                selectedItems.remove(selectedItem); //remove deselected item from the list of selected items
+            else
+                selectedItems.add(selectedItem); //add selected item to the list of selected items
         });
+
 
 
     }
 
     public void showSelectedItems(View view) {
-        String selItems = "";
-        periodno = period.getSelectedItem().toString();
-        if (periodno.equals("Select Period")) {
-            Toast.makeText(this, "Select a class", Toast.LENGTH_LONG).show();
+        StringBuilder selItems = new StringBuilder();
 
-        } else {
-            ref = FirebaseDatabase.getInstance().getReference();
 
-            dbAttendance = ref.child("attendance").child(date);
+        ref = FirebaseDatabase.getInstance().getReference();
 
             for (String item : selectedItems) {
-                Toast.makeText(this, "Attendance created Successfully", Toast.LENGTH_SHORT).show();
+                dbAttendance = ref.child("Attendance").child(tdep).child(item).child(ssem).child(subj).child("atd");
                 nonselectedItems.remove(item);
-                dbAttendance.child(item).child(periodno).setValue("P" + " / " + teacher_id);
-                if (selItems == "")
-                    selItems = item;
+                dbAttendance.child(date).setValue("P");
+                atdref = ref.child("Attendance").child(tdep).child(item).child(ssem).child(subj);
+                atdref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            stdatd = dataSnapshot.child("studentAttendance").getValue(Integer.class);
+                            tlatd = dataSnapshot.child("totalAttendanceTaken").getValue(Integer.class);
+                            percentage = (float) (((stdatd+1)/(tlatd+1))*100);
+                            atdref.child("percentage").setValue(percentage);
+                            atdref.child("studentAttendance").setValue(stdatd+1);
+                            atdref.child("totalAttendanceTaken").setValue(tlatd+1);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+                Toast.makeText(this, "Attendance created Successfully", Toast.LENGTH_SHORT).show();
+                if (selItems.toString().equals(""))
+                    selItems = new StringBuilder(item);
                 else
-                    selItems += "/" + item;
+                    selItems.append("/").append(item);
             }
             // Toast.makeText(this, selItems, Toast.LENGTH_LONG).show();
 
@@ -171,14 +762,30 @@ public class TakeAttendance extends AppCompatActivity {
             //for making absent
             for (String item : nonselectedItems) {
                 Toast.makeText(this, "Attendance created Successfully", Toast.LENGTH_SHORT).show();
-                dbAttendance.child(item).child(periodno).setValue("A" + " / " + teacher_id);
-                //Toast.makeText(this, "absentees:" + nonselectedItems, Toast.LENGTH_LONG).show();
+                dbAttendance = ref.child("Attendance").child(tdep).child(item).child(ssem).child(subj).child("atd");
+                dbAttendance.child(date).setValue("A");
+//                Toast.makeText(this, "absentees:" + nonselectedItems, Toast.LENGTH_LONG).show();
+                atdref = ref.child("Attendance").child(tdep).child(item).child(ssem).child(subj);
+                atdref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        stdatd = dataSnapshot.child("studentAttendance").getValue(Integer.class);
+                        tlatd = dataSnapshot.child("totalAttendanceTaken").getValue(Integer.class);
+                        percentage = (float) ((stdatd/(tlatd+1))*100);
+                        atdref.child("percentage").setValue(percentage);
+                        atdref.child("studentAttendance").setValue(stdatd);
+                        atdref.child("totalAttendanceTaken").setValue(tlatd+1);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
 
             }
         }
 
-
-    }
 
     public void addtoreport(View v) throws IOException, BiffException {
 

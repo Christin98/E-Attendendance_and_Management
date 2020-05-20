@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/recta"
     android:orientation="vertical"
     tools:context="com.project.minor.e_attendance.AddTeacher">
 
@@ -15,6 +15,12 @@
         android:layout_height="wrap_content"
         tools:layout_editor_absoluteX="8dp"
         />
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabMode="fixed"
+        app:tabGravity="fill" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,41 +33,55 @@
         >
 
         <EditText
-            android:id="@+id/editText1"
+            android:id="@+id/tename"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="new teacher name"
+            android:hint="New Teacher Name"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.055"
             tools:layout_editor_absoluteX="8dp" />
 
+        <Spinner
+            android:id="@+id/tspbranch"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:entries="@array/branches"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.549"
+            tools:layout_editor_absoluteX="8dp" />
+
         <EditText
-            android:id="@+id/editText3"
+            android:id="@+id/tid"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="id"
+            android:hint="Staff ID"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.221"
             tools:layout_editor_absoluteX="8dp" />
 
+
+
         <EditText
-            android:id="@+id/editText4"
+            android:id="@+id/tusername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="subject"
+            android:hint="Username"
             android:inputType="textPersonName"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -69,26 +89,16 @@
             tools:layout_editor_absoluteX="8dp" />
 
 
-        <Spinner
-            android:id="@+id/spinner3"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:entries="@array/classes"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.549"
-            tools:layout_editor_absoluteX="8dp" />
+
 
         <EditText
-            android:id="@+id/editText5"
+            android:id="@+id/tpass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="password"
+            android:hint="Password"
             android:inputType="textPassword"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -105,7 +115,7 @@
             android:weightSum="3">
 
             <Button
-                android:id="@+id/button9"
+                android:id="@+id/addbutton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

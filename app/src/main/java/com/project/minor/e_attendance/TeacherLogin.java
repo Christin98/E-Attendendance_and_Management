@@ -2,6 +2,7 @@ package com.project.minor.e_attendance;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,14 +10,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.project.minor.e_attendance.object.Teacher;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class TeacherLogin extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -24,43 +33,62 @@ public class TeacherLogin extends AppCompatActivity implements AdapterView.OnIte
     String item;
     String message;
     Toolbar mToolbar;
-    String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
+    String tdep;
+    String date = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_teacher_login);
-        Spinner spinner2 = findViewById(R.id.spinner2);
-
 
         //to get username from login page
-        Bundle bundle1 = getIntent().getExtras();
-        message = bundle1.getString("message");
+//        Bundle bundle1 = getIntent().getExtras();
+//        message = bundle1.getString("message");
+        message = "FACIT001";
         mToolbar= findViewById(R.id.takeattendancebar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setTitle(message+"'s Dashboard  - "+date);
 
         TextView txtView = findViewById(R.id.textView1);
-        txtView.setText("Welcome : "+message);
+        txtView.setText(String.format("Welcome : %s", message));
+
+        FirebaseDatabase.getInstance().getReference("Teacher").child(message).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Teacher teacher = dataSnapshot.getValue(Teacher.class);
+                if (teacher == null) {
+                    Log.e("TA", "null recevied");
+                }
+                assert teacher != null;
+                tdep = teacher.getBranch();
+                Log.e("TA", tdep);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
 
         // Spinner click listener
-        spinner2.setOnItemSelectedListener(this);
-
-        // Spinner Drop down elements
-        List<String> categories = new ArrayList<>();
-        categories.add("CS-A");
-        categories.add("CS-B");
-        categories.add("CS-C");
-        categories.add("CS-D");
-
-        // Creating adapter for spinner
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        spinner2.setAdapter(dataAdapter);
+//        spinner2.setOnItemSelectedListener(this);
+//
+//        // Spinner Drop down elements
+//        List<String> categories = new ArrayList<>();
+//        categories.add("CS-A");
+//        categories.add("CS-B");
+//        categories.add("CS-C");
+//        categories.add("CS-D");
+//
+//        // Creating adapter for spinner
+//        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+//
+//        // Drop down layout style - list view with radio button
+//        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        // attaching data adapter to spinner
+//        spinner2.setAdapter(dataAdapter);
     }
 
     @Override
@@ -78,8 +106,8 @@ public class TeacherLogin extends AppCompatActivity implements AdapterView.OnIte
 
     public void takeAttendanceButton(View v){
         Bundle basket= new Bundle();
-        basket.putString("class_selected", item);
         basket.putString("tid", message);
+        basket.putString("tdep",tdep);
 
 
         Intent intent = new Intent(this, TakeAttendance.class);
@@ -89,9 +117,8 @@ public class TeacherLogin extends AppCompatActivity implements AdapterView.OnIte
 
     public void  previous_records(View v){
         Bundle basket= new Bundle();
-        basket.putString("class_selected", item);
         basket.putString("tid", message);
-
+        basket.putString("tdep",tdep);
 
         Intent intent = new Intent(this, TeacherAttendanceSheet.class);
         intent.putExtras(basket);

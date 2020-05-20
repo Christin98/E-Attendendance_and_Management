@@ -25,6 +25,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.project.minor.e_attendance.object.Parent;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -70,11 +71,14 @@ public class LoginActivity extends AppCompatActivity implements  AdapterView.OnI
         categories.add("Admin");
         categories.add("Teacher");
         categories.add("Student");
+        categories.add("Parents");
 
         // Creating adapter for spinner
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter.setDropDownViewResource(android.R.layout.select_dialog_item);
         spinner.setAdapter(dataAdapter);
+
+//        ref.child("Admin").child("username").setValue("")
     }
 
         @Override
@@ -99,130 +103,136 @@ public class LoginActivity extends AppCompatActivity implements  AdapterView.OnI
         ref = FirebaseDatabase.getInstance().getReference();
         final DatabaseReference dbuser = ref.child(item);
 
-        if (item == "Admin") {
-            dbuser.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    try {
-                        if (dataSnapshot.getValue() != null) {
-                            HashMap login = (HashMap) dataSnapshot.getValue();
-                            String username = (String) login.get("username");
-                            String password = (String) login.get("password");
-                            verify(username, password);
-                        }
-                    } catch (Exception e) {
-                        mDialog.dismiss();
-                        Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(getApplicationContext(), "something went wrong", Toast.LENGTH_LONG).show();
-                }
-            });
-//            dbuser.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                      @Override
-//                                                      public void onDataChange(DataSnapshot dataSnapshot) {
-//                    try {
-//                        if (dataSnapshot.getValue() != null) {
-////                        if(item=="Admin") {
-//                            HashMap login = (HashMap) dataSnapshot.getValue();
-//                            String username = (String) login.get("username");
-//                            String password = (String) login.get("password");
-//                            verify(username, password);
-//                        }
-//                        else if (item=="Teacher" || item=="Student") {
-//                            DatabaseReference reference = dbuser.child(userid);
-//                            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                                    try {
-//                                        if (dataSnapshot.getValue() != null) {
-//                                            HashMap login = (HashMap) dataSnapshot.getValue();
-//                                            String password = (String) login.get("password");
-//                                            verify(userid, password);
-//                                        } else {
-//                                            mDialog.dismiss();
-//                                            Toast.makeText(LoginActivity.this, "Database Error.Pleas check your entries.", Toast.LENGTH_SHORT).show();
-//                                        }
-//                                    } catch (Exception e)
-//                                    {
-//                                        mDialog.dismiss();
-//                                        Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError databaseError) {
-//                                    Toast.makeText(getApplicationContext(), "something went wrong", Toast.LENGTH_LONG).show();
-//                                }
-//                            }
-//                            });
-////
-        } else if (item=="Teacher") {
-            DatabaseReference reference = dbuser.child(userid);
-            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    try {
-                                        if (dataSnapshot.getValue() != null) {
-                                            HashMap login = (HashMap) dataSnapshot.getValue();
-                                            String tid = (String) login.get("tid");
-                                            String password = (String) login.get("tpass");
-                                            verify(tid, password);
-                                        } else {
-                                            mDialog.dismiss();
-                                            Toast.makeText(LoginActivity.this, "Database Error.Pleas check your entries.", Toast.LENGTH_SHORT).show();
-                                        }
-                                    } catch (Exception e)
-                                    {
-                                        mDialog.dismiss();
-                                        Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(getApplicationContext(), "something went wrong", Toast.LENGTH_LONG).show();
-                }
-            });
-    }  else if (item=="Student") {
-            DatabaseReference reference = dbuser.child(userid);
-            reference.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    try {
-                        if (dataSnapshot.getValue() != null) {
-                            HashMap login = (HashMap) dataSnapshot.getValue();
-                            String sid = (String) login.get("sid");
-                            String password = (String) login.get("spass");
-                            verify(sid, password);
-                        } else {
+        switch (item) {
+            case "Admin":
+                dbuser.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try {
+                            if (dataSnapshot.getValue() != null) {
+                                HashMap login = (HashMap) dataSnapshot.getValue();
+                                String username = (String) login.get("username");
+                                String password = (String) login.get("password");
+                                verify(username, password);
+                            }
+                        } catch (Exception e) {
                             mDialog.dismiss();
-                            Toast.makeText(LoginActivity.this, "Database Error.Pleas check your entries.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                         }
-                    } catch (Exception e)
-                    {
-                        mDialog.dismiss();
-                        Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                     }
-                }
 
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    Toast.makeText(getApplicationContext(), "something went wrong", Toast.LENGTH_LONG).show();
-                }
-            });
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        mDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                    }
+                });
+//
+////
+                break;
+            case "Teacher": {
+                DatabaseReference reference = dbuser.child(userid);
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try {
+                            if (dataSnapshot.getValue() != null) {
+                                HashMap login = (HashMap) dataSnapshot.getValue();
+                                String tid = (String) login.get("tid");
+                                String password = (String) login.get("tpass");
+                                try {
+                                    String p = EncDecUtil.decrypt(password, tid);
+                                    verify(tid, p);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                mDialog.dismiss();
+                                Toast.makeText(LoginActivity.this, "Database Error.Please check your entries.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            mDialog.dismiss();
+                            Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        mDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            }
+            case "Student": {
+                DatabaseReference reference = dbuser.child(userid);
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try {
+                            if (dataSnapshot.getValue() != null) {
+                                HashMap login = (HashMap) dataSnapshot.getValue();
+                                String sid = (String) login.get("sid");
+                                String password = (String) login.get("spass");
+                                try {
+                                    String p = EncDecUtil.decrypt(password, sid);
+                                    verify(sid, p);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                mDialog.dismiss();
+                                Toast.makeText(LoginActivity.this, "Database Error.Please check your entries.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            mDialog.dismiss();
+                            Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                        Toast.makeText(getApplicationContext(), "Something went wrong", Toast.LENGTH_LONG).show();
+                    }
+                });
+                break;
+            }
+            case "Parents" : {
+                DatabaseReference reference = dbuser.child(userid);
+                reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        try {
+                            if (dataSnapshot.getValue() != null){
+                                Parent parent = dataSnapshot.getValue(Parent.class);
+                                String sid = parent.getSid();
+                                String pssw = parent.getParentpassword();
+                                verify(sid, pssw);
+                            } else {
+                                mDialog.dismiss();
+                                Toast.makeText(LoginActivity.this, "Database Error.Please check your entries.", Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (Exception e) {
+                            mDialog.dismiss();
+                            Toast.makeText(LoginActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
         }
     }
 
     public void verify(String dbusername, String dbpassword){
         if(userid.isEmpty()) {
+            mDialog.dismiss();
             Toast.makeText(getApplicationContext(),"Username cannot be empty", Toast.LENGTH_LONG).show();
         }
-        else
-        if (item == "Teacher" && pass.equals(dbpassword) && userid.equals(dbusername)) {
+        else if (item.equals("Teacher") && pass.equals(dbpassword) && userid.equals(dbusername)) {
 
             mDialog.dismiss();
             Intent intent = new Intent(this, TeacherLogin.class);
@@ -230,8 +240,7 @@ public class LoginActivity extends AppCompatActivity implements  AdapterView.OnI
             startActivity(intent);
 
         }
-
-        else if (item == "Admin" && pass.equals(dbpassword) && userid.equals(dbusername) ) {
+        else if (item.equals("Admin") && pass.equals(dbpassword) && userid.equals(dbusername) ) {
             //  if (userid.equalsIgnoreCase("admin") && pass.equals("admin")) {
             mDialog.dismiss();
             Intent intent = new Intent(this, AdminLogin.class);
@@ -239,13 +248,20 @@ public class LoginActivity extends AppCompatActivity implements  AdapterView.OnI
             startActivity(intent);
             //  }
         }
-        else if (item == "Student" && pass.equals(dbpassword ) && userid.equals(dbusername)) {
+        else if (item.equals("Student") && pass.equals(dbpassword ) && userid.equals(dbusername)) {
             mDialog.dismiss();
             Intent intent = new Intent(this, StudentLogin.class);
             intent.putExtras(basket);
             startActivity(intent);
         }
+        else if (item.equals("Parent") && pass.equals(dbpassword) && userid.equals(dbusername)) {
+            mDialog.dismiss();
+            Intent intent = new Intent(this, ParentLogin.class);
+            intent.putExtras(basket);
+            startActivity(intent);
+        }
         else if(!pass.equals(dbpassword) || !userid.equals(dbusername)){
+            mDialog.dismiss();
             Toast.makeText(getApplicationContext(),"UserId or Password is Incorrect", Toast.LENGTH_LONG).show();
         }
     }

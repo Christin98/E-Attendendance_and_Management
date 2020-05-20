@@ -1,5 +1,6 @@
 package com.project.minor.e_attendance;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +21,7 @@ public class StudentLogin extends AppCompatActivity {
 
     private static long back_pressed;
     String message;
+    @SuppressLint("SimpleDateFormat")
     String date = new SimpleDateFormat("dd-MM-yyyy").format(new Date());
     Toolbar mToolbar;
     DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Teacher");
@@ -31,9 +33,9 @@ public class StudentLogin extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         message = bundle.getString("message");
         mToolbar= findViewById(R.id.ftoolbar);
-        mToolbar.setTitle(message+" | Dashboard |"+"("+date+")");
+        mToolbar.setTitle(message +" | Dashboard |"+"("+date+")");
         TextView txtView = findViewById(R.id.textView1);
-        txtView.setText("Welcome :"+message);
+        txtView.setText(String.format("Welcome :%s", message));
     }
 
     public void viewAttendance(View v){

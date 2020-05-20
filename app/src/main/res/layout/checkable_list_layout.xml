@@ -2,12 +2,12 @@
 
 <CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/txt_title"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:checkMark="?android:attr/listChoiceIndicatorMultiple"
     android:gravity="center_vertical"
-    android:hint="something"
-    android:padding="5sp"
-    android:textColor="#ffff"
+    android:hint="Name"
+    android:padding="5dp"
+    android:textColor="#ffffff"
     android:textSize="20sp"
     />

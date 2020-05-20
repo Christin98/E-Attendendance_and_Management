@@ -28,7 +28,8 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="TextView"
-            android:textSize="20dp"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintHorizontal_bias="0.917"
             app:layout_constraintLeft_toLeftOf="@+id/btshow"
@@ -38,19 +39,45 @@
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1" />
 
-        <Spinner
-            android:id="@+id/spinner4"
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <Spinner
+            android:id="@+id/batchatd"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_margin="10dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:entries="@array/periods"
+            android:entries="@array/batches"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.063"
             tools:layout_editor_absoluteX="8dp" />
 
+        <TextView
+            android:id="@+id/semtv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Semester"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:layout_marginTop="8dp"/>
+
+            <Spinner
+                android:id="@+id/subatd"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_margin="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:entries="@array/batches"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.063"
+                tools:layout_editor_absoluteX="8dp"/>
+
+        </LinearLayout>
 
         <ListView
             android:id="@+id/checkable_list"
@@ -64,11 +91,7 @@
             app:layout_constraintVertical_bias="0.496"
             tools:layout_constraintLeft_creator="1"
             tools:layout_constraintRight_creator="1">
-
-
-
         </ListView>
-
 
     </LinearLayout>
 
@@ -78,27 +101,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_margin="10dp"
-        android:layout_weight="1"
-        android:background="@drawable/loginselector"
+        android:background="@drawable/button"
         android:onClick="showSelectedItems"
         android:padding="10dp"
         android:text="Submit"
-
         android:textColor="#fff"
         />
-
-    <Button
-        android:id="@+id/button13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/btshow"
-        android:layout_centerHorizontal="true"
-        android:layout_weight="1"
-        android:onClick="addtoreport"
-        android:text="Report"
-        android:textColor="#ffff"
-        android:visibility="invisible"
-        tools:ignore="OnClick" />
 
 </RelativeLayout>
 

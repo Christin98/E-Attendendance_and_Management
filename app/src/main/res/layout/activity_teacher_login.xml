@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@drawable/recta"
     android:orientation="vertical"
     tools:context="com.project.minor.e_attendance.TeacherLogin">
 
@@ -19,7 +19,6 @@
         android:id="@+id/textView1"
         android:layout_width="368dp"
         android:layout_height="wrap_content"
-
         android:focusableInTouchMode="false"
         android:forceHasOverlappingRendering="true"
         android:gravity="center"
@@ -43,27 +42,9 @@
         android:padding="10dp">
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Your Class"
-            android:textColor="#fff"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
-        <Spinner
-            android:id="@+id/spinner2"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_marginBottom="8dp"
-
-            app:layout_constraintBottom_toBottomOf="parent"
-
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.161"
-            tools:layout_editor_absoluteX="8dp" />
 
         <Button
-            android:id="@+id/button6"
+            android:id="@+id/takeattendancebtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -79,7 +60,7 @@
             tools:layout_editor_absoluteX="8dp" />
 
         <Button
-            android:id="@+id/button7"
+            android:id="@+id/prevrecbtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -95,7 +76,7 @@
             app:layout_constraintVertical_bias="0.626"
             tools:layout_editor_absoluteX="8dp" />
         <Button
-            android:id="@+id/logout"
+            android:id="@+id/logoutteach"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"

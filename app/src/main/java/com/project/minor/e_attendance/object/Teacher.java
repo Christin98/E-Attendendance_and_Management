@@ -5,21 +5,25 @@ package com.project.minor.e_attendance.object;
  */
 
 public class Teacher {
-    String tname;
-    String tid;
-    String subject;
-    String classes;
-    String tpass;
+    private String tname;
+    private String tid;
+    private String branch;
+    private String username;
+    private String tpass;
 
   /*  public Teacher(String tname, String tid, EditText subject, Spinner classes){
 
     }*/
 
-    public Teacher(String tname, String tid, String subject, String classes, String tpass) {
+    public Teacher() {
+
+    }
+
+    public Teacher(String tname, String tid, String branch, String username, String tpass) {
         this.tname = tname;
         this.tid = tid;
-        this.subject = subject;
-        this.classes = classes;
+        this.branch = branch;
+        this.username = username;
         this.tpass = tpass;
     }
 
@@ -27,20 +31,39 @@ public class Teacher {
         return tname;
     }
 
+    public void setTname(String tname) {
+        this.tname = tname;
+    }
+
     public String getTid() {
         return tid;
     }
 
-    public String getSubject() {
-        return subject;
+    public void setTid(String tid) {
+        this.tid = tid;
     }
 
-    public String getClasses() {
-        return classes;
+    public String getBranch() {
+        return branch;
     }
 
-    public String gettpass() {
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getTpass() {
         return tpass;
     }
 
+    public void setTpass(String tpass) {
+        this.tpass = tpass;
+    }
 }

@@ -1,16 +1,23 @@
 package com.project.minor.e_attendance;
 
+import android.annotation.SuppressLint;
+import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.DatePicker;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,13 +26,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class AdminAttendanceSheet extends AppCompatActivity {
 
     ListView listView;
     Spinner class_name;
     String classes;
-    EditText date;
     ArrayList Userlist = new ArrayList<>();
     ArrayList Studentlist = new ArrayList<>();
 
@@ -34,7 +41,26 @@ public class AdminAttendanceSheet extends AppCompatActivity {
     DatabaseReference dbStudent;
     String required_date;
     Toolbar mToolbar;
+    public static TextView date;
 
+    public static class DatePickerFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
+
+
+        @NonNull
+        @Override
+        public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+            final Calendar c = Calendar.getInstance();
+            int year = c.get(Calendar.YEAR);
+            int month = c.get(Calendar.MONTH);
+            int day  = c.get(Calendar.DAY_OF_MONTH);
+            return new DatePickerDialog(getActivity(), this, year, month, day);
+        }
+
+        @SuppressLint("SetTextI18n")
+        public void onDateSet(DatePicker view, int year, int month, int day) {
+            date.setText(day +"/" +(month + 1) + "/" + year);
+        }
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +72,6 @@ public class AdminAttendanceSheet extends AppCompatActivity {
         listView = findViewById(R.id.list);
         class_name = findViewById(R.id.spinner5);
         date = findViewById(R.id.date);
-
         classes = class_name.getSelectedItem().toString();
     }
 
@@ -117,5 +142,10 @@ public class AdminAttendanceSheet extends AppCompatActivity {
             finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void showDatePickerDialog(View v) {
+        DialogFragment newFragment = new DatePickerFragment();
+        newFragment.show(getSupportFragmentManager(), "datePicker");
     }
 }

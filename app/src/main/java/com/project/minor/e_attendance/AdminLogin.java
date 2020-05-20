@@ -63,31 +63,36 @@ public class AdminLogin extends AppCompatActivity {
         startActivity(intent);
     }
 
-    public void CreateAttendance(View v){
-
-        //Toast.makeText(getApplicationContext(),date, Toast.LENGTH_LONG).show();
-        dbStudent.addListenerForSingleValueEvent(new ValueEventListener() {
-
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                String sid,P1="-",P2="-",P3="-",P4="-",P5="-",P6="-",P7="-",P8="-";
-                AttendanceSheet a = new AttendanceSheet(P1,P2,P3,P4,P5,P6,P7,P8);
-                // Result will be holded Here
-                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
-                    sid=dsp.child("sid").getValue().toString(); //add result into array list
-                    dbAttendance.child(date).child(sid).setValue(a);
-
-                }
-                Toast.makeText(getApplicationContext(),"successfully created "+date+" db", Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(getApplicationContext(), "something went wrong", Toast.LENGTH_LONG).show();
-            }
-
-        });
+    public void addParent(View v) {
+        Intent intent = new Intent(this, AddParent.class);
+        startActivity(intent);
     }
+//
+//    public void CreateAttendance(View v){
+//
+//        //Toast.makeText(getApplicationContext(),date, Toast.LENGTH_LONG).show();
+//        dbStudent.addListenerForSingleValueEvent(new ValueEventListener() {
+//
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                String sid, batch, ;
+//                AttendanceSheet a = new AttendanceSheet(P1,P2,P3,P4,P5,P6,P7,P8);
+//                // Result will be holded Here
+//                for (DataSnapshot dsp : dataSnapshot.getChildren()) {
+//                    sid=dsp.child("sid").getValue().toString(); //add result into array list
+//                    dbAttendance.child(date).child(sid).setValue(a);
+//
+//                }
+//                Toast.makeText(getApplicationContext(),"successfully created "+date+" db", Toast.LENGTH_LONG).show();
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Toast.makeText(getApplicationContext(), "something went wrong", Toast.LENGTH_LONG).show();
+//            }
+//
+//        });
+//    }
 
     public void logout(View view) {
 
@@ -105,27 +110,18 @@ public class AdminLogin extends AppCompatActivity {
         View add_menu_layout = inflater.inflate(R.layout.change_password, null);
         final EditText password= add_menu_layout.findViewById(R.id.newpassword);
         alertDialog.setView(add_menu_layout);
-        alertDialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(final DialogInterface dialog, int which) {
-                if (!TextUtils.isEmpty(password.getText().toString()))
-                {
-                    dbadmin.child("Admin").setValue(password.getText().toString());
-                    Toast.makeText(AdminLogin.this, "Successfully Changed", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    Toast.makeText(AdminLogin.this, "Please Enter New Password", Toast.LENGTH_SHORT).show();
-                }
+        alertDialog.setPositiveButton("YES", (dialog, which) -> {
+            if (!TextUtils.isEmpty(password.getText().toString()))
+            {
+                dbadmin.child("Admin").setValue(password.getText().toString());
+                Toast.makeText(AdminLogin.this, "Successfully Changed", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(AdminLogin.this, "Please Enter New Password", Toast.LENGTH_SHORT).show();
             }
         });
-        alertDialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        alertDialog.setNegativeButton("NO", (dialog, which) -> dialog.dismiss());
         alertDialog.show();
     }
 
